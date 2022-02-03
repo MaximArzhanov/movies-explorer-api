@@ -3,7 +3,7 @@ const mongoose = require('mongoose');
 
 const app = express();
 
-mongoose.connect('mongodb://localhost:27017/mongodb')
+mongoose.connect('mongodb://localhost:27017/bitfilmsdb')
   .then(() => console.log('Success: Database connected!'))
   .catch((err) => console.log(`Error: ${err}`));
 
