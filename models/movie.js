@@ -1,14 +1,71 @@
 const mongoose = require('mongoose');
-// Опишем схему:
-const userSchema = new mongoose.Schema({
+
+const movieSchema = new mongoose.Schema({
   name: {
     type: String,
     required: true,
-    minlength: 2,
-    maxlength: 30,
   },
-  about: String,
+  director: {
+    type: String,
+    required: true,
+  },
+  duration: {
+    type: String,
+    required: true,
+  },
+  year: {
+    type: String,
+    required: true,
+  },
+  description: {
+    type: String,
+    required: true,
+  },
+  image: {
+    type: String,
+    required: true,
+    validate: {
+      validator(v) {
+        return /https?:\/\/(www\.)?[\w-]+\.[\w]{2,}[\w\W]*/.test(v);
+      },
+    },
+  },
+  trailerLink: {
+    type: String,
+    required: true,
+    validate: {
+      validator(v) {
+        return /https?:\/\/(www\.)?[\w-]+\.[\w]{2,}[\w\W]*/.test(v);
+      },
+    },
+  },
+  thumbnail: {
+    type: String,
+    required: true,
+    validate: {
+      validator(v) {
+        return /https?:\/\/(www\.)?[\w-]+\.[\w]{2,}[\w\W]*/.test(v);
+      },
+    },
+  },
+  owner: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'user',
+    required: true,
+  },
+  movieId: {
+    type: mongoose.Schema.Types.ObjectId,
+    required: true,
+    unique: true,
+  },
+  nameRU: {
+    type: String,
+    required: true,
+  },
+  nameEN: {
+    type: String,
+    required: true,
+  },
 });
 
-// создаём модель и экспортируем её
-module.exports = mongoose.model('user', userSchema);
+module.exports = mongoose.model('movie', movieSchema);
