@@ -4,5 +4,5 @@ const app = express();
 const PORT = 3000; // Нужно добавить в переменную окружения
 
 app.listen(PORT, () => {
-    console.log(`App listening on port ${PORT}`);
+  console.log(`App listening on port ${PORT}`);
 });
