@@ -1,0 +1,19 @@
+{
+  "name": "movies-explorer-api",
+  "version": "1.0.0",
+  "description": "This is the api for my diploma project",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/MaximArzhanov/movies-explorer-api.git"
+  },
+  "author": "Maxim Arzhanov",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/MaximArzhanov/movies-explorer-api/issues"
+  },
+  "homepage": "https://github.com/MaximArzhanov/movies-explorer-api#readme"
+}
