@@ -4,7 +4,8 @@
   "description": "This is the api for my diploma project",
   "main": "app.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "node app.js",
+    "dev": "nodemon app.js"
   },
   "repository": {
     "type": "git",
@@ -15,5 +16,8 @@
   "bugs": {
     "url": "https://github.com/MaximArzhanov/movies-explorer-api/issues"
   },
-  "homepage": "https://github.com/MaximArzhanov/movies-explorer-api#readme"
+  "homepage": "https://github.com/MaximArzhanov/movies-explorer-api#readme",
+  "devDependencies": {
+    "nodemon": "^2.0.15"
+  }
 }
