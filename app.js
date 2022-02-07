@@ -8,7 +8,7 @@ const bodyParser = require('body-parser');
 
 const usersRouter = require('./routes/users');
 const moviesRouter = require('./routes/movies');
-const { createUser, login } = require('./controllers/users');
+const { createUser, login, logout } = require('./controllers/users');
 const auth = require('./middlewares/auth');
 
 const { errorTextServerError } = require('./utils/constants');
@@ -38,6 +38,9 @@ app.use(auth);
 
 app.use('/', usersRouter);
 app.use('/', moviesRouter);
+
+/** Роут для выхода пользователя из приложения */
+app.post('/signout', logout);
 
 // Обработка ошибки при переходе на несуществующий роут
 app.use((req, res, next) => {

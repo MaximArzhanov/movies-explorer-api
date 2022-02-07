@@ -10,11 +10,9 @@ const {
   errorTextWrongPasswordOrEmail,
 } = require('../utils/constants');
 
-const {
-  NotFoundError,
-  ConflictError,
-  UnauthorizedError,
-} = require('../errors/not-found-err');
+const NotFoundError = require('../errors/not-found-err');
+const ConflictError = require('../errors/conflict-err');
+const UnauthorizedError = require('../errors/unauthorized-err');
 
 // Обработка ошибки userAlreadyExist
 const handleErrorUserAlreadyExist = (err, next) => {
@@ -62,7 +60,7 @@ module.exports.getCurrentUser = (req, res, next) => {
 module.exports.updateUserInfo = (req, res, next) => {
   User.findByIdAndUpdate(req.user._id, {
     name: req.body.name,
-    about: req.body.about,
+    email: req.body.email,
   }, { new: true, runValidators: true })
     .then((user) => { sendData(user, res); })
     .catch((err) => { handleErrorUserNotFound(err, next); });
@@ -106,4 +104,16 @@ module.exports.login = (req, res, next) => {
         next(err);
       }
     });
+};
+
+/** Выход пользователя из приложения */
+module.exports.logout = (req, res, next) => {
+  try {
+    res
+      .clearCookie('jwt')
+      .status(200)
+      .send({ data: 'токен успешно удалён' });
+  } catch (err) {
+    next(err);
+  }
 };

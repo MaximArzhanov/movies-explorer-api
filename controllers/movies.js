@@ -55,25 +55,25 @@ module.exports.createMovie = (req, res, next) => {
     year: req.body.year,
     description: req.body.description,
     image: req.body.image,
-    trailer: req.body.trailer,
+    trailerLink: req.body.trailerLink,
     nameRU: req.body.nameRU,
     nameEN: req.body.nameEN,
     thumbnail: req.body.thumbnail,
     movieId: req.body.movieId,
     owner: req.user._id,
   })
-    .then((card) => res.status(200).send({ data: card }))
+    .then((movie) => res.status(200).send({ data: movie }))
     .catch(next);
 };
 
 /** Находит фильм в базе данных по id и удаляет его */
 module.exports.deleteMovie = (req, res, next) => {
-  Movie.findById(req.params.cardId)
+  Movie.findById(req.params.movieId)
     .then((movie) => {
       checkIsDataEmpty(movie);
       checkUserIsOwnerMovie(movie, req);
       // Удаление фильма
-      Movie.deleteOne({ _id: req.params.cardId })
+      Movie.deleteOne({ _id: req.params.movieId })
         .then((data) => res.status(200).send({ data }))
         .catch(next);
     })
