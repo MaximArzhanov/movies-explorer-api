@@ -1,7 +1,18 @@
 const bcrypt = require('bcryptjs');
+const jwt = require('jsonwebtoken');
 const User = require('../models/user');
-const { errorTextUserNotFound, errorTextUserAlreadyExist } = require('../utils/constants');
-const { NotFoundError, ConflictError } = require('../errors/not-found-err');
+
+const {
+  errorTextUserNotFound,
+  errorTextUserAlreadyExist,
+  errorTextWrongPasswordOrEmail,
+} = require('../utils/constants');
+
+const {
+  NotFoundError,
+  ConflictError,
+  UnauthorizedError,
+} = require('../errors/not-found-err');
 
 // Обработка ошибки userAlreadyExist
 const handleErrorUserAlreadyExist = (err, next) => {
@@ -68,4 +79,31 @@ module.exports.createUser = (req, res, next) => {
         .catch((err) => { handleErrorUserAlreadyExist(err, next); });
     })
     .catch(next);
+};
+
+/** Авторизация пользователя */
+module.exports.login = (req, res, next) => {
+  const { email, password } = req.body;
+  return User.findUserByCredentials(email, password)
+    .then((user) => {
+      const token = jwt.sign(
+        { _id: user._id },
+        NODE_ENV === 'production' ? JWT_SECRET : 'dev-secret',
+      );
+      res
+        .cookie('jwt', token, {
+          maxAge: 3600000 * 24 * 365,
+          httpOnly: true,
+        })
+        .end();
+      // .status(200).send({ jwt: token });
+      // res.status(200).send({ token: tokenJWT });
+    })
+    .catch((err) => {
+      if (err.name === 'CastError' || err.name === 'ValidationError') {
+        next(new UnauthorizedError(errorTextWrongPasswordOrEmail));
+      } else {
+        next(err);
+      }
+    });
 };
