@@ -10,9 +10,10 @@ const usersRouter = require('./routes/users');
 const moviesRouter = require('./routes/movies');
 const { createUser, login } = require('./controllers/users');
 const auth = require('./middlewares/auth');
-const nonExistentRoute = require('./middlewares/non-existent-route');
 
 const { errorTextServerError } = require('./utils/constants');
+const { errorTextNonExistentRoute } = require('./utils/constants');
+const { NotFoundError } = require('./errors/not-found-err');
 
 const app = express();
 
@@ -39,7 +40,9 @@ app.use('/', usersRouter);
 app.use('/', moviesRouter);
 
 // Обработка ошибки при переходе на несуществующий роут
-app.use(nonExistentRoute);
+app.use((req, res, next) => {
+  next(new NotFoundError(errorTextNonExistentRoute));
+});
 
 // Централизованная обработка ошибок
 app.use((err, req, res, next) => {
