@@ -2,6 +2,8 @@ const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const User = require('../models/user');
 
+const { NODE_ENV, JWT_SECRET } = process.env;
+
 const {
   errorTextUserNotFound,
   errorTextUserAlreadyExist,
@@ -66,7 +68,7 @@ module.exports.updateUserInfo = (req, res, next) => {
     .catch((err) => { handleErrorUserNotFound(err, next); });
 };
 
-/** Создаёт пользователя в базе данных */
+/** Создаёт пользователя в базе данных (Регистрация пользователя) */
 module.exports.createUser = (req, res, next) => {
   bcrypt.hash(req.body.password, 10)
     .then((hash) => {
@@ -96,8 +98,6 @@ module.exports.login = (req, res, next) => {
           httpOnly: true,
         })
         .end();
-      // .status(200).send({ jwt: token });
-      // res.status(200).send({ token: tokenJWT });
     })
     .catch((err) => {
       if (err.name === 'CastError' || err.name === 'ValidationError') {
