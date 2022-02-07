@@ -5,7 +5,7 @@ const NotFoundError = require('../errors/not-found-err');
 const ForbiddenError = require('../errors/forbidden-err');
 
 // Обработка ошибок
-const handleError = (err, next) => {
+const handleErrorUserNotFound = (err, next) => {
   if (err.name === 'CastError' || err.name === 'ValidationError') {
     next(new NotFoundError(errorTextMovieNotFound));
   } else {
@@ -21,7 +21,7 @@ const checkUserIsOwnerMovie = (movie, req) => {
 };
 
 // Проверяет наличие данных
-const checkDataEmpty = (movie) => {
+const checkIsDataEmpty = (movie) => {
   if (!movie) { throw new NotFoundError(errorTextMovieNotFound); }
 };
 
@@ -70,12 +70,12 @@ module.exports.createMovie = (req, res, next) => {
 module.exports.deleteMovie = (req, res, next) => {
   Movie.findById(req.params.cardId)
     .then((movie) => {
-      checkDataEmpty(movie);
+      checkIsDataEmpty(movie);
       checkUserIsOwnerMovie(movie, req);
       // Удаление фильма
       Movie.deleteOne({ _id: req.params.cardId })
         .then((data) => res.status(200).send({ data }))
         .catch(next);
     })
-    .catch((err) => { handleError(err, next); });
+    .catch((err) => { handleErrorUserNotFound(err, next); });
 };

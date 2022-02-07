@@ -1,7 +1,9 @@
 const router = require('express').Router();
 
-router.get('/users/me');
+const { getCurrentUser, updateUserInfo } = require('../controllers/users');
 
-router.patch('/users/me');
+router.get('/users/me', getCurrentUser);
+
+router.patch('/users/me', updateUserInfo);
 
 module.exports = router;
