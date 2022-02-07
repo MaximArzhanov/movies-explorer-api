@@ -10,6 +10,8 @@ const { createUser, login } = require('./controllers/users');
 const auth = require('./middlewares/auth');
 const nonExistentRoute = require('./middlewares/non-existent-route');
 
+const { errorTextServerError } = require('./utils/constants');
+
 const app = express();
 
 const PORT = 3000; // Нужно добавить в переменную окружения
@@ -34,7 +36,16 @@ app.use(auth);
 app.use('/', usersRouter);
 app.use('/', moviesRouter);
 
+// Обработка ошибки при переходе на несуществующий роут
 app.use(nonExistentRoute);
+
+// Централизованная обработка ошибок
+app.use((err, req, res, next) => {
+  const { statusCode = 500, message } = err;
+  res
+    .status(statusCode)
+    .send({ message: statusCode === 500 ? errorTextServerError : message });
+});
 
 app.listen(PORT, () => {
   console.log(`App listening on port ${PORT}`);

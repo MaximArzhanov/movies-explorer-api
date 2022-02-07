@@ -1,5 +1,5 @@
 const Movie = require('../models/movie');
-const { errorTextMovieNotFound, errorCannotDeleteMovie } = require('../utils/constants');
+const { errorTextMovieNotFound, errorTextCannotDeleteMovie } = require('../utils/constants');
 
 const NotFoundError = require('../errors/not-found-err');
 const ForbiddenError = require('../errors/forbidden-err');
@@ -16,7 +16,7 @@ const handleErrorUserNotFound = (err, next) => {
 // Проверяет, принадлежит ли удаляемый фильм текущему пользователю
 const checkUserIsOwnerMovie = (movie, req) => {
   if (req.user._id !== movie.owner.toString()) {
-    throw new ForbiddenError(errorCannotDeleteMovie);
+    throw new ForbiddenError(errorTextCannotDeleteMovie);
   }
 };
 
