@@ -8,7 +8,7 @@ const usersRouter = require('./routes/users');
 const moviesRouter = require('./routes/movies');
 const { createUser, login } = require('./controllers/users');
 const auth = require('./middlewares/auth');
-const nonExistantRoute = require('./middlewares/non_existent_route');
+const nonExistentRoute = require('./middlewares/non-existent-route');
 
 const app = express();
 
@@ -34,7 +34,7 @@ app.use(auth);
 app.use('/', usersRouter);
 app.use('/', moviesRouter);
 
-app.use(nonExistantRoute);
+app.use(nonExistentRoute);
 
 app.listen(PORT, () => {
   console.log(`App listening on port ${PORT}`);
