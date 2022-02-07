@@ -4,10 +4,10 @@ const mongoose = require('mongoose');
 const cookieParser = require('cookie-parser');
 const bodyParser = require('body-parser');
 
-const { createUser, login } = require('./controllers/users');
-
 const usersRouter = require('./routes/users');
 const moviesRouter = require('./routes/movies');
+const { createUser, login } = require('./controllers/users');
+const auth = require('./middlewares/auth');
 
 const app = express();
 
@@ -26,6 +26,9 @@ app.post('/signup', createUser);
 
 /** Роут авторизации пользователя */
 app.post('/signin', login);
+
+// Защита роутов авторизацией
+app.use(auth);
 
 app.use('/', usersRouter);
 app.use('/', moviesRouter);
