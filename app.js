@@ -6,8 +6,9 @@ require('dotenv').config();
 const cookieParser = require('cookie-parser');
 const bodyParser = require('body-parser');
 
+// Валидация с помощью Joi/Celebrate
 const { errors } = require('celebrate');
-const { validateSignupRoute, validateSigninRoute } = require('./validators/validatationJoi');
+const { validateSignupRoute, validateSigninRoute } = require('./validators/validatation-joi');
 
 const usersRouter = require('./routes/users');
 const moviesRouter = require('./routes/movies');
@@ -17,6 +18,8 @@ const auth = require('./middlewares/auth');
 const { errorTextServerError } = require('./utils/constants');
 const { errorTextNonExistentRoute } = require('./utils/constants');
 const { NotFoundError } = require('./errors/not-found-err');
+
+const { requestLogger, errorLogger } = require('./middlewares/logger');
 
 const app = express();
 
@@ -29,6 +32,9 @@ mongoose.connect('mongodb://localhost:27017/bitfilmsdb')
 app.use(cookieParser());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
+
+/** Логи запросов */
+app.use(requestLogger);
 
 /** Роут регистрации пользователя */
 app.post('/signup', validateSignupRoute(), createUser);
@@ -49,6 +55,9 @@ app.post('/signout', logout);
 app.use((req, res, next) => {
   next(new NotFoundError(errorTextNonExistentRoute));
 });
+
+/** Логи ошибок */
+app.use(errorLogger);
 
 /** Обработка ошибок celebrate */
 app.use(errors());
