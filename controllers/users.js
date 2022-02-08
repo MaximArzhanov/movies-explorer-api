@@ -32,6 +32,15 @@ const handleErrorUserNotFound = (err, next) => {
   }
 };
 
+// Обработка ошибки UnauthorizedError
+const handleErrorUnauthorizedError = (err, next) => {
+  if (err.name === 'CastError' || err.name === 'ValidationError') {
+    next(new UnauthorizedError(errorTextWrongPasswordOrEmail));
+  } else {
+    next(err);
+  }
+};
+
 // Проверяет наличие данных
 const checkIsDataEmpty = (user) => {
   if (!user) { throw new NotFoundError(errorTextUserNotFound); }
@@ -47,6 +56,17 @@ const sendData = (user, res) => {
 const sendDataWithoutPassword = (user, res) => {
   checkIsDataEmpty(user);
   res.status(200).send({ data: { name: user.name, email: user.email } });
+};
+
+// Отправляет cookie
+const sendCookie = (res, token) => {
+  res
+    .cookie('jwt', token, {
+      maxAge: 3600000 * 24 * 365,
+      httpOnly: true,
+    })
+    .status(200)
+    .send({ data: 'Вход выполнен' });
 };
 
 /** Возвращает информацию о текущем пользователе */
@@ -90,21 +110,9 @@ module.exports.login = (req, res, next) => {
         { _id: user._id },
         NODE_ENV === 'production' ? JWT_SECRET : 'dev-secret',
       );
-      res
-        .cookie('jwt', token, {
-          maxAge: 3600000 * 24 * 365,
-          httpOnly: true,
-        })
-        .status(200)
-        .send({ data: 'Вход выполнен' });
+      sendCookie(res, token);
     })
-    .catch((err) => {
-      if (err.name === 'CastError' || err.name === 'ValidationError') {
-        next(new UnauthorizedError(errorTextWrongPasswordOrEmail));
-      } else {
-        next(err);
-      }
-    });
+    .catch((err) => { handleErrorUnauthorizedError(err, next); });
 };
 
 /** Выход пользователя из приложения */

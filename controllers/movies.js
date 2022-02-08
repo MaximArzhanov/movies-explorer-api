@@ -1,11 +1,25 @@
 const Movie = require('../models/movie');
-const { errorTextMovieNotFound, errorTextCannotDeleteMovie } = require('../utils/constants');
+const {
+  errorTextMovieNotFound,
+  errorTextCannotDeleteMovie,
+  errorTextMovieAlreadyExist,
+} = require('../utils/constants');
 
 const NotFoundError = require('../errors/not-found-err');
 const ForbiddenError = require('../errors/forbidden-err');
+const ConflictError = require('../errors/conflict-err');
+
+// Обработка ошибки movieAlreadyExist
+const handleErrorMovieAlreadyExist = (err, next) => {
+  if (err.code === 11000) {
+    next(new ConflictError(errorTextMovieAlreadyExist));
+  } else {
+    next(err);
+  }
+};
 
 // Обработка ошибок
-const handleErrorUserNotFound = (err, next) => {
+const handleErrorMovieNotFound = (err, next) => {
   if (err.name === 'CastError' || err.name === 'ValidationError') {
     next(new NotFoundError(errorTextMovieNotFound));
   } else {
@@ -35,19 +49,6 @@ module.exports.getMovies = (req, res, next) => {
 
 /** Создаёт новый фильм в базе данных и отправляет ответ */
 module.exports.createMovie = (req, res, next) => {
-  // const {
-  //   country,
-  //   director,
-  //   duration,
-  //   year,
-  //   description,
-  //   image,
-  //   trailer,
-  //   nameRU,
-  //   nameEN,
-  //   thumbnail,
-  //   movieId,
-  // } = req.body;
   Movie.create({
     country: req.body.country,
     director: req.body.director,
@@ -63,7 +64,7 @@ module.exports.createMovie = (req, res, next) => {
     owner: req.user._id,
   })
     .then((movie) => res.status(200).send({ data: movie }))
-    .catch(next);
+    .catch((err) => { handleErrorMovieAlreadyExist(err, next); });
 };
 
 /** Находит фильм в базе данных по id и удаляет его */
@@ -77,5 +78,5 @@ module.exports.deleteMovie = (req, res, next) => {
         .then((data) => res.status(200).send({ data }))
         .catch(next);
     })
-    .catch((err) => { handleErrorUserNotFound(err, next); });
+    .catch((err) => { handleErrorMovieNotFound(err, next); });
 };
