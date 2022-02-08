@@ -10,41 +10,12 @@ const {
   errorTextWrongPasswordOrEmail,
 } = require('../utils/constants');
 
-const NotFoundError = require('../errors/not-found-err');
-const ConflictError = require('../errors/conflict-err');
-const UnauthorizedError = require('../errors/unauthorized-err');
-
-// Обработка ошибки userAlreadyExist
-const handleErrorUserAlreadyExist = (err, next) => {
-  if (err.code === 11000) {
-    next(new ConflictError(errorTextUserAlreadyExist));
-  } else {
-    next(err);
-  }
-};
-
-// Обработка ошибки userNotFound
-const handleErrorUserNotFound = (err, next) => {
-  if (err.name === 'CastError' || err.name === 'ValidationError') {
-    next(new NotFoundError(errorTextUserNotFound));
-  } else {
-    next(err);
-  }
-};
-
-// Обработка ошибки UnauthorizedError
-const handleErrorUnauthorizedError = (err, next) => {
-  if (err.name === 'CastError' || err.name === 'ValidationError') {
-    next(new UnauthorizedError(errorTextWrongPasswordOrEmail));
-  } else {
-    next(err);
-  }
-};
-
-// Проверяет наличие данных
-const checkIsDataEmpty = (user) => {
-  if (!user) { throw new NotFoundError(errorTextUserNotFound); }
-};
+const {
+  checkIsDataEmpty,
+  handleNotFoundError,
+  handleDataAlreadyExistError,
+  handleUnauthorizedError,
+} = require('../utils/utils');
 
 // Отправляет данные
 const sendData = (user, res) => {
@@ -73,7 +44,7 @@ const sendCookie = (res, token) => {
 module.exports.getCurrentUser = (req, res, next) => {
   User.findOne({ _id: req.user._id })
     .then((user) => { sendData(user, res); })
-    .catch((err) => { handleErrorUserNotFound(err, next); });
+    .catch((err) => { handleNotFoundError(err, next, errorTextUserNotFound); });
 };
 
 /** Находит пользователя в базе данных по id, обновляет информацию  и отправляет ответ */
@@ -83,7 +54,7 @@ module.exports.updateUserInfo = (req, res, next) => {
     email: req.body.email,
   }, { new: true, runValidators: true })
     .then((user) => { sendData(user, res); })
-    .catch((err) => { handleErrorUserNotFound(err, next); });
+    .catch((err) => { handleNotFoundError(err, next, errorTextUserNotFound); });
 };
 
 /** Создаёт пользователя в базе данных (Регистрация пользователя) */
@@ -96,7 +67,7 @@ module.exports.createUser = (req, res, next) => {
         password: hash,
       })
         .then((user) => { sendDataWithoutPassword(user, res); })
-        .catch((err) => { handleErrorUserAlreadyExist(err, next); });
+        .catch((err) => { handleDataAlreadyExistError(err, next, errorTextUserAlreadyExist); });
     })
     .catch(next);
 };
@@ -112,7 +83,7 @@ module.exports.login = (req, res, next) => {
       );
       sendCookie(res, token);
     })
-    .catch((err) => { handleErrorUnauthorizedError(err, next); });
+    .catch((err) => { handleUnauthorizedError(err, next, errorTextWrongPasswordOrEmail); });
 };
 
 /** Выход пользователя из приложения */

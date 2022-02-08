@@ -1,42 +1,24 @@
 const Movie = require('../models/movie');
+
 const {
   errorTextMovieNotFound,
   errorTextCannotDeleteMovie,
   errorTextMovieAlreadyExist,
 } = require('../utils/constants');
 
-const NotFoundError = require('../errors/not-found-err');
+const {
+  checkIsDataEmpty,
+  handleNotFoundError,
+  handleDataAlreadyExistError,
+} = require('../utils/utils');
+
 const ForbiddenError = require('../errors/forbidden-err');
-const ConflictError = require('../errors/conflict-err');
-
-// Обработка ошибки movieAlreadyExist
-const handleErrorMovieAlreadyExist = (err, next) => {
-  if (err.code === 11000) {
-    next(new ConflictError(errorTextMovieAlreadyExist));
-  } else {
-    next(err);
-  }
-};
-
-// Обработка ошибок
-const handleErrorMovieNotFound = (err, next) => {
-  if (err.name === 'CastError' || err.name === 'ValidationError') {
-    next(new NotFoundError(errorTextMovieNotFound));
-  } else {
-    next(err);
-  }
-};
 
 // Проверяет, принадлежит ли удаляемый фильм текущему пользователю
 const checkUserIsOwnerMovie = (movie, req) => {
   if (req.user._id !== movie.owner.toString()) {
     throw new ForbiddenError(errorTextCannotDeleteMovie);
   }
-};
-
-// Проверяет наличие данных
-const checkIsDataEmpty = (movie) => {
-  if (!movie) { throw new NotFoundError(errorTextMovieNotFound); }
 };
 
 /** Находит все фильмы в базе данных и отправляет ответ */
@@ -64,7 +46,7 @@ module.exports.createMovie = (req, res, next) => {
     owner: req.user._id,
   })
     .then((movie) => res.status(200).send({ data: movie }))
-    .catch((err) => { handleErrorMovieAlreadyExist(err, next); });
+    .catch((err) => { handleDataAlreadyExistError(err, next, errorTextMovieAlreadyExist); });
 };
 
 /** Находит фильм в базе данных по id и удаляет его */
@@ -78,5 +60,5 @@ module.exports.deleteMovie = (req, res, next) => {
         .then((data) => res.status(200).send({ data }))
         .catch(next);
     })
-    .catch((err) => { handleErrorMovieNotFound(err, next); });
+    .catch((err) => { handleNotFoundError(err, next, errorTextMovieNotFound); });
 };
