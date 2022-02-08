@@ -6,6 +6,9 @@ require('dotenv').config();
 const cookieParser = require('cookie-parser');
 const bodyParser = require('body-parser');
 
+const { errors } = require('celebrate');
+const { validateSignupRoute, validateSigninRoute } = require('./validators/validatationJoi');
+
 const usersRouter = require('./routes/users');
 const moviesRouter = require('./routes/movies');
 const { createUser, login, logout } = require('./controllers/users');
@@ -28,10 +31,10 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
 /** Роут регистрации пользователя */
-app.post('/signup', createUser);
+app.post('/signup', validateSignupRoute(), createUser);
 
 /** Роут авторизации пользователя */
-app.post('/signin', login);
+app.post('/signin', validateSigninRoute(), login);
 
 // Защита роутов авторизацией
 app.use(auth);
@@ -46,6 +49,9 @@ app.post('/signout', logout);
 app.use((req, res, next) => {
   next(new NotFoundError(errorTextNonExistentRoute));
 });
+
+/** Обработка ошибок celebrate */
+app.use(errors());
 
 // Централизованная обработка ошибок
 app.use((err, req, res, next) => {

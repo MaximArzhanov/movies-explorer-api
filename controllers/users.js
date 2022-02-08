@@ -95,7 +95,8 @@ module.exports.login = (req, res, next) => {
           maxAge: 3600000 * 24 * 365,
           httpOnly: true,
         })
-        .end();
+        .status(200)
+        .send({ data: 'Вход выполнен' });
     })
     .catch((err) => {
       if (err.name === 'CastError' || err.name === 'ValidationError') {
