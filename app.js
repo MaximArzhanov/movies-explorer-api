@@ -1,12 +1,14 @@
 const express = require('express');
 const mongoose = require('mongoose');
 
+const cors = require('cors');
+
 require('dotenv').config();
 
 const cookieParser = require('cookie-parser');
 const bodyParser = require('body-parser');
 
-// Валидация с помощью Joi/Celebrate
+/** Валидация с помощью Joi/Celebrate */
 const { errors } = require('celebrate');
 const { validateSignupRoute, validateSigninRoute } = require('./validators/validatation-joi');
 
@@ -36,13 +38,29 @@ app.use(bodyParser.urlencoded({ extended: true }));
 /** Логи запросов */
 app.use(requestLogger);
 
+/** CORS */
+app.use(cors({
+  origin: '*',
+  methods: ['GET, HEAD, PUT, PATCH, POST, DELETE'],
+  preflightContinue: false,
+  optionsSuccessStatus: 204,
+  allowedHeaders: ['Content-type', 'origin', 'Authorization', 'Cookie'],
+  exposedHeaders: ['Set-Cookie'],
+  credentials: true,
+}));
+
+app.use((req, res, next) => {
+  res.header('Access-Control-Allow-Origin', 'https://praktikum.tk');
+  next();
+});
+
 /** Роут регистрации пользователя */
 app.post('/signup', validateSignupRoute(), createUser);
 
 /** Роут авторизации пользователя */
 app.post('/signin', validateSigninRoute(), login);
 
-// Защита роутов авторизацией
+/** Защита роутов авторизацией */
 app.use(auth);
 
 app.use('/', usersRouter);
@@ -62,7 +80,7 @@ app.use(errorLogger);
 /** Обработка ошибок celebrate */
 app.use(errors());
 
-// Централизованная обработка ошибок
+/** Централизованная обработка ошибок */
 app.use((err, req, res, next) => {
   const { statusCode = 500, message } = err;
   res
