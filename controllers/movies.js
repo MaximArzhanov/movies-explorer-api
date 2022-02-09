@@ -53,7 +53,7 @@ module.exports.createMovie = (req, res, next) => {
 module.exports.deleteMovie = (req, res, next) => {
   Movie.findById(req.params.movieId)
     .then((movie) => {
-      checkIsDataEmpty(movie);
+      checkIsDataEmpty(movie, errorTextMovieNotFound);
       checkUserIsOwnerMovie(movie, req);
       // Удаление фильма
       Movie.deleteOne({ _id: req.params.movieId })

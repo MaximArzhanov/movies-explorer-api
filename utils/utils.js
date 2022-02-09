@@ -2,11 +2,9 @@ const NotFoundError = require('../errors/not-found-err');
 const ConflictError = require('../errors/conflict-err');
 const UnauthorizedError = require('../errors/unauthorized-err');
 
-const { errorTextUserNotFound } = require('./constants');
-
 // Проверяет наличие данных
-const checkIsDataEmpty = (data) => {
-  if (!data) { throw new NotFoundError(errorTextUserNotFound); }
+const checkIsDataEmpty = (data, errorText) => {
+  if (!data) { throw new NotFoundError(errorText); }
 };
 
 // Обработка ошибки NotFoundError

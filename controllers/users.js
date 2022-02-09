@@ -19,13 +19,13 @@ const {
 
 // Отправляет данные
 const sendData = (user, res) => {
-  checkIsDataEmpty(user);
+  checkIsDataEmpty(user, errorTextUserNotFound);
   res.status(200).send({ data: user });
 };
 
 // Отправляет данные без пароля
 const sendDataWithoutPassword = (user, res) => {
-  checkIsDataEmpty(user);
+  checkIsDataEmpty(user, errorTextUserNotFound);
   res.status(200).send({ data: { name: user.name, email: user.email } });
 };
 
