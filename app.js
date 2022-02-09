@@ -1,7 +1,7 @@
 const express = require('express');
 const mongoose = require('mongoose');
 
-// const cors = require('cors');
+const cors = require('cors');
 
 require('dotenv').config();
 
@@ -19,7 +19,8 @@ const auth = require('./middlewares/auth');
 
 const { errorTextServerError } = require('./utils/constants');
 const { errorTextNonExistentRoute } = require('./utils/constants');
-const { NotFoundError } = require('./errors/not-found-err');
+
+const NotFoundError = require('./errors/not-found-err');
 
 const { requestLogger, errorLogger } = require('./middlewares/logger');
 
@@ -39,20 +40,15 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(requestLogger);
 
 /** CORS */
-// app.use(cors({
-//   origin: '*',
-//   methods: ['GET, HEAD, PUT, PATCH, POST, DELETE'],
-//   preflightContinue: false,
-//   optionsSuccessStatus: 204,
-//   allowedHeaders: ['Content-type', 'origin', 'Authorization', 'Cookie'],
-//   exposedHeaders: ['Set-Cookie'],
-//   credentials: true,
-// }));
-
-// app.use((req, res, next) => {
-//   res.header('Access-Control-Allow-Origin', 'https://praktikum.tk');
-//   next();
-// });
+app.use(cors({
+  origin: '*',
+  methods: ['GET, HEAD, PUT, PATCH, POST, DELETE'],
+  preflightContinue: false,
+  optionsSuccessStatus: 204,
+  allowedHeaders: ['Content-type', 'origin', 'Authorization', 'Cookie'],
+  exposedHeaders: ['Set-Cookie'],
+  credentials: true,
+}));
 
 /** Роут регистрации пользователя */
 app.post('/signup', validateSignupRoute(), createUser);
