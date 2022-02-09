@@ -35,8 +35,8 @@ const sendCookie = (res, token) => {
     .cookie('jwt', token, {
       maxAge: 3600000 * 24 * 365,
       httpOnly: true,
-      sameSite: 'none',
-      secure: true,
+      // sameSite: 'none',
+      // secure: true,
     })
     .status(200)
     .send({ data: 'Вход выполнен' });
