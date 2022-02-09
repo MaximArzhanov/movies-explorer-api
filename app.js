@@ -1,9 +1,11 @@
 const express = require('express');
 const mongoose = require('mongoose');
 
+require('dotenv').config();
+
 const cors = require('cors');
 
-require('dotenv').config();
+const { PORT, DB_CONN } = process.env;
 
 const cookieParser = require('cookie-parser');
 const bodyParser = require('body-parser');
@@ -26,9 +28,7 @@ const { requestLogger, errorLogger } = require('./middlewares/logger');
 
 const app = express();
 
-const PORT = 3000; // Нужно добавить в переменную окружения
-
-mongoose.connect('mongodb://localhost:27017/bitfilmsdb')
+mongoose.connect(DB_CONN)
   .then(() => console.log('Success: Database connected!'))
   .catch((err) => console.log(`Error: ${err}`));
 
