@@ -10,16 +10,16 @@ const { PORT, DB_CONN } = process.env;
 const cookieParser = require('cookie-parser');
 const bodyParser = require('body-parser');
 
-/** Валидация с помощью Joi/Celebrate */
 const { errors } = require('celebrate');
 const { validateSignupRoute, validateSigninRoute } = require('./validators/validatation-joi');
+
+const { handleErrorCentral } = require('./middlewares/handle-errors');
 
 const usersRouter = require('./routes/users');
 const moviesRouter = require('./routes/movies');
 const { createUser, login, logout } = require('./controllers/users');
 const auth = require('./middlewares/auth');
 
-const { errorTextServerError } = require('./utils/constants');
 const { errorTextNonExistentRoute } = require('./utils/constants');
 
 const NotFoundError = require('./errors/not-found-err');
@@ -77,12 +77,7 @@ app.use(errorLogger);
 app.use(errors());
 
 /** Централизованная обработка ошибок */
-app.use((err, req, res, next) => {
-  const { statusCode = 500, message } = err;
-  res
-    .status(statusCode)
-    .send({ message: statusCode === 500 ? errorTextServerError : message });
-});
+app.use(handleErrorCentral);
 
 app.listen(PORT, () => {
   console.log(`App listening on port ${PORT}`);
