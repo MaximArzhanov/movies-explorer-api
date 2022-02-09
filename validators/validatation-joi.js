@@ -1,5 +1,6 @@
 const { celebrate, Joi } = require('celebrate');
 
+// При регистрации
 function validateSignupRoute() {
   return celebrate({
     body: Joi.object().keys({
@@ -34,6 +35,7 @@ function validateSignupRoute() {
   });
 }
 
+// При авторизации
 function validateSigninRoute() {
   return celebrate({
     body: Joi.object().keys({
@@ -57,6 +59,7 @@ function validateSigninRoute() {
   });
 }
 
+// При обновлении информации о пользователе
 function validateUpdateUserInfoRoute() {
   return celebrate({
     body: Joi.object().keys({
@@ -80,17 +83,11 @@ function validateUpdateUserInfoRoute() {
           'any.required': 'Поле email является обязательным',
           'string.email': 'Введённый email не соответствует формату',
         }),
-      password: Joi
-        .string()
-        .required()
-        .messages({
-          'string.empty': 'Поле с паролем не должно быть пустым',
-          'any.required': 'Поле с паролем является обязательным',
-        }),
     }),
   });
 }
 
+// При удалении карточки
 function validateDeleteMovieRoute() {
   return celebrate({
     params: Joi.object().keys({
@@ -109,6 +106,7 @@ function validateDeleteMovieRoute() {
   });
 }
 
+// При создании карточки
 function validateCreateMovieRoute() {
   return celebrate({
     body: Joi.object().keys({
