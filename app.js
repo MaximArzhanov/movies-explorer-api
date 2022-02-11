@@ -1,33 +1,22 @@
 const express = require('express');
 const mongoose = require('mongoose');
-
 require('dotenv').config();
-
-const cors = require('cors');
 
 const {
   PORT = 3000,
   DB_CONN = 'mongodb://localhost:27017/moviesdb',
 } = process.env;
 
+const cors = require('cors');
 const cookieParser = require('cookie-parser');
 const bodyParser = require('body-parser');
-
 const { errors } = require('celebrate');
-const { validateSignupRoute, validateSigninRoute } = require('./validators/validatation-joi');
-
 const { handleErrorCentral } = require('./middlewares/handle-errors');
-
-const usersRouter = require('./routes/users');
-const moviesRouter = require('./routes/movies');
-const { createUser, login, logout } = require('./controllers/users');
 const auth = require('./middlewares/auth');
-
 const { errorTextNonExistentRoute } = require('./utils/constants');
-
 const NotFoundError = require('./errors/not-found-err');
-
 const { requestLogger, errorLogger } = require('./middlewares/logger');
+const { logout } = require('./controllers/users');
 
 const app = express();
 
@@ -54,19 +43,19 @@ app.use(cors({
 }));
 
 /** Роут регистрации пользователя */
-app.post('/signup', validateSignupRoute(), createUser);
+app.use(require('./routes/sign'));
 
 /** Роут авторизации пользователя */
-app.post('/signin', validateSigninRoute(), login);
+app.use(require('./routes/sign'));
 
 /** Защита роутов авторизацией */
 app.use(auth);
 
-app.use('/', usersRouter);
-app.use('/', moviesRouter);
+app.use(require('./routes/users'));
+app.use(require('./routes/movies'));
 
 /** Роут для выхода пользователя из приложения */
-app.post('/signout', logout);
+app.use('/signout', logout);
 
 // Обработка ошибки при переходе на несуществующий роут
 app.use((req, res, next) => {
