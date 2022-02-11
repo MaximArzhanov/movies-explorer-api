@@ -5,6 +5,7 @@ const handleErrorCentral = (err, req, res, next) => {
   res
     .status(statusCode)
     .send({ message: statusCode === 500 ? errorTextServerError : message });
+  next();
 };
 
 module.exports = { handleErrorCentral };
