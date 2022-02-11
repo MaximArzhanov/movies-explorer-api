@@ -24,7 +24,7 @@ const checkUserIsOwnerMovie = (movie, req) => {
 /** Находит все фильмы в базе данных и отправляет ответ */
 module.exports.getMovies = (req, res, next) => {
   Movie.find({})
-    .then((movies) => res.status(200).send({ data: movies }))
+    .then((movies) => res.send({ data: movies }))
     .catch(next);
 };
 
@@ -44,7 +44,7 @@ module.exports.createMovie = (req, res, next) => {
     movieId: req.body.movieId,
     owner: req.user._id,
   })
-    .then((movie) => res.status(200).send({ data: movie }))
+    .then((movie) => res.send({ data: movie }))
     .catch((err) => { handleDataAlreadyExistError(err, next, errorTextMovieAlreadyExist); });
 };
 
@@ -56,7 +56,7 @@ module.exports.deleteMovie = (req, res, next) => {
       checkUserIsOwnerMovie(movie, req);
       // Удаление фильма
       Movie.deleteOne({ _id: req.params.movieId })
-        .then((data) => res.status(200).send({ data }))
+        .then((data) => res.send({ data }))
         .catch(next);
     })
     .catch((err) => { handleNotFoundError(err, next, errorTextMovieNotFound); });

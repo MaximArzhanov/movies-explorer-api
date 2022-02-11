@@ -20,13 +20,13 @@ const {
 // Отправляет данные
 const sendData = (user, res) => {
   checkIsDataEmpty(user, errorTextUserNotFound);
-  res.status(200).send({ data: user });
+  res.send({ data: user });
 };
 
 // Отправляет данные без пароля
 const sendDataWithoutPassword = (user, res) => {
   checkIsDataEmpty(user, errorTextUserNotFound);
-  res.status(200).send({ data: { name: user.name, email: user.email } });
+  res.send({ data: { name: user.name, email: user.email } });
 };
 
 // Отправляет cookie
@@ -38,7 +38,6 @@ const sendCookie = (res, token) => {
       // sameSite: 'none',
       // secure: true,
     })
-    .status(200)
     .send({ data: 'Вход выполнен' });
 };
 
@@ -97,10 +96,7 @@ module.exports.login = (req, res, next) => {
 /** Выход пользователя из приложения */
 module.exports.logout = (req, res, next) => {
   try {
-    res
-      .clearCookie('jwt')
-      .status(200)
-      .send({ data: 'токен успешно удалён' });
+    res.clearCookie('jwt').send({ data: 'токен успешно удалён' });
   } catch (err) {
     next(err);
   }
