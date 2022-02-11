@@ -8,7 +8,11 @@ const {
   errorTextUserNotFound,
   errorTextUserAlreadyExist,
   errorTextWrongPasswordOrEmail,
+  messageLoginCompleted,
+  messageTokenWasDeleted,
 } = require('../utils/constants');
+
+const { secretKeyDev } = require('../utils/config');
 
 const {
   checkIsDataEmpty,
@@ -38,7 +42,7 @@ const sendCookie = (res, token) => {
       // sameSite: 'none',
       // secure: true,
     })
-    .send({ data: 'Вход выполнен' });
+    .send({ data: messageLoginCompleted });
 };
 
 /** Возвращает информацию о текущем пользователе */
@@ -86,7 +90,7 @@ module.exports.login = (req, res, next) => {
     .then((user) => {
       const token = jwt.sign(
         { _id: user._id },
-        NODE_ENV === 'production' ? JWT_SECRET : 'dev-secret',
+        NODE_ENV === 'production' ? JWT_SECRET : secretKeyDev,
       );
       sendCookie(res, token);
     })
@@ -96,7 +100,7 @@ module.exports.login = (req, res, next) => {
 /** Выход пользователя из приложения */
 module.exports.logout = (req, res, next) => {
   try {
-    res.clearCookie('jwt').send({ data: 'токен успешно удалён' });
+    res.clearCookie('jwt').send({ data: messageTokenWasDeleted });
   } catch (err) {
     next(err);
   }

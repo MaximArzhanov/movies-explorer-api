@@ -2,11 +2,6 @@ const express = require('express');
 const mongoose = require('mongoose');
 require('dotenv').config();
 
-const {
-  PORT = 3000,
-  DB_CONN = 'mongodb://localhost:27017/moviesdb',
-} = process.env;
-
 const cors = require('cors');
 const cookieParser = require('cookie-parser');
 const bodyParser = require('body-parser');
@@ -14,9 +9,12 @@ const { errors } = require('celebrate');
 const { handleErrorCentral } = require('./middlewares/handle-errors');
 const auth = require('./middlewares/auth');
 const { errorTextNonExistentRoute } = require('./utils/constants');
+const { numberOfPort, dataBaseAddress } = require('./utils/config');
 const NotFoundError = require('./errors/not-found-err');
 const { requestLogger, errorLogger } = require('./middlewares/logger');
 const { logout } = require('./controllers/users');
+
+const { PORT = numberOfPort, DB_CONN = dataBaseAddress } = process.env;
 
 const app = express();
 

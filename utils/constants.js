@@ -8,6 +8,9 @@ const errorTextNeedAuthorization = 'Необходима авторизация'
 const errorTextNonExistentRoute = 'Задан некорректный адрес';
 const errorTextServerError = 'На сервере произошла ошибка';
 
+const messageLoginCompleted = 'Вход выполнен';
+const messageTokenWasDeleted = 'токен успешно удалён';
+
 module.exports = {
   errorTextUserNotFound,
   errorTextMovieNotFound,
@@ -18,4 +21,6 @@ module.exports = {
   errorTextNonExistentRoute,
   errorTextServerError,
   errorTextMovieAlreadyExist,
+  messageLoginCompleted,
+  messageTokenWasDeleted,
 };
