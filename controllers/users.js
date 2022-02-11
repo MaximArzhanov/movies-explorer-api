@@ -14,7 +14,7 @@ const {
   checkIsDataEmpty,
   handleNotFoundError,
   handleDataAlreadyExistError,
-  handleUnauthorizedError,
+  handleBadRequest,
 } = require('../utils/utils');
 
 // Отправляет данные
@@ -91,7 +91,7 @@ module.exports.login = (req, res, next) => {
       );
       sendCookie(res, token);
     })
-    .catch((err) => { handleUnauthorizedError(err, next, errorTextWrongPasswordOrEmail); });
+    .catch((err) => { handleBadRequest(err, next, errorTextWrongPasswordOrEmail); });
 };
 
 /** Выход пользователя из приложения */

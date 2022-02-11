@@ -1,6 +1,7 @@
 const NotFoundError = require('../errors/not-found-err');
 const ConflictError = require('../errors/conflict-err');
 const UnauthorizedError = require('../errors/unauthorized-err');
+const BadRequestError = require('../errors/bad-request-err');
 
 // Проверяет наличие данных
 const checkIsDataEmpty = (data, errorText) => {
@@ -34,9 +35,15 @@ const handleUnauthorizedError = (err, next, errorText) => {
   }
 };
 
+// Обработка ошибки BadRequest
+const handleBadRequest = (err, next, errorText) => {
+  next(new BadRequestError(errorText));
+};
+
 module.exports = {
   checkIsDataEmpty,
   handleNotFoundError,
   handleDataAlreadyExistError,
   handleUnauthorizedError,
+  handleBadRequest,
 };
