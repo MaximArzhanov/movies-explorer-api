@@ -56,7 +56,13 @@ module.exports.updateUserInfo = (req, res, next) => {
     email: req.body.email,
   }, { new: true, runValidators: true })
     .then((user) => { sendData(user, res); })
-    .catch((err) => { handleNotFoundError(err, next, errorTextUserNotFound); });
+    .catch((err) => {
+      if (err.code === 11000) {
+        handleDataAlreadyExistError(err, next, errorTextUserAlreadyExist);
+      } else {
+        handleNotFoundError(err, next, errorTextUserNotFound);
+      }
+    });
 };
 
 /** Создаёт пользователя в базе данных (Регистрация пользователя) */
