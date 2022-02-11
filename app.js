@@ -5,7 +5,10 @@ require('dotenv').config();
 
 const cors = require('cors');
 
-const { PORT, DB_CONN } = process.env;
+const {
+  PORT = 3000,
+  DB_CONN = 'mongodb://localhost:27017/moviesdb',
+} = process.env;
 
 const cookieParser = require('cookie-parser');
 const bodyParser = require('body-parser');
