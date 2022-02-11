@@ -7,8 +7,8 @@ const {
 
 router.get('/movies', getMovies);
 
-router.post('/movies', validateCreateMovieRoute(), createMovie);
+router.post('/movies', validateCreateMovieRoute, createMovie);
 
-router.delete('/movies/:movieId', validateDeleteMovieRoute(), deleteMovie);
+router.delete('/movies/:movieId', validateDeleteMovieRoute, deleteMovie);
 
 module.exports = router;
