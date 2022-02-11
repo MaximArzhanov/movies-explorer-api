@@ -24,7 +24,6 @@ const checkUserIsOwnerMovie = (movie, req) => {
 /** Находит все фильмы в базе данных и отправляет ответ */
 module.exports.getMovies = (req, res, next) => {
   Movie.find({})
-    .populate('owner')
     .then((movies) => res.status(200).send({ data: movies }))
     .catch(next);
 };
