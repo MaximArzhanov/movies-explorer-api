@@ -6,8 +6,14 @@ const { secretKeyDev } = require('../utils/config');
 const { NODE_ENV, JWT_SECRET } = process.env;
 
 module.exports = (req, res, next) => {
-  if (!req.cookies.jwt) { next(new UnauthorizedError(errorTextNeedAuthorization)); }
-  const token = req.cookies.jwt;
+  // if (!req.cookies.jwt) { next(new UnauthorizedError(errorTextNeedAuthorization)); }
+  // const token = req.cookies.jwt;
+
+  const { authorization } = req.headers;
+  if (!authorization || !authorization.startsWith('Bearer ')) {
+    return next(new UnauthorizedError(errorTextNeedAuthorization));
+  }
+  const token = authorization.replace('Bearer ', '');
 
   let payload;
   try {

@@ -8,7 +8,7 @@ const {
   errorTextUserNotFound,
   errorTextUserAlreadyExist,
   errorTextWrongPasswordOrEmail,
-  messageLoginCompleted,
+  // messageLoginCompleted,
   messageTokenWasDeleted,
 } = require('../utils/constants');
 
@@ -34,16 +34,16 @@ const sendDataWithoutPassword = (user, res) => {
 };
 
 // Отправляет cookie
-const sendCookie = (res, token) => {
-  res
-    .cookie('jwt', token, {
-      maxAge: 3600000 * 24 * 365,
-      httpOnly: true,
-      sameSite: 'none',
-      secure: true,
-    })
-    .send({ data: messageLoginCompleted });
-};
+// const sendCookie = (res, token) => {
+//   res
+//     .cookie('jwt', token, {
+//       maxAge: 3600000 * 24 * 365,
+//       httpOnly: true,
+//       sameSite: 'none',
+//       secure: true,
+//     })
+//     .send({ data: messageLoginCompleted });
+// };
 
 /** Возвращает информацию о текущем пользователе */
 module.exports.getCurrentUser = (req, res, next) => {
@@ -92,7 +92,8 @@ module.exports.login = (req, res, next) => {
         { _id: user._id },
         NODE_ENV === 'production' ? JWT_SECRET : secretKeyDev,
       );
-      sendCookie(res, token);
+      res.status(200).send({ jwt: token });
+      // sendCookie(res, token);
     })
     .catch((err) => { handleBadRequest(err, next, errorTextWrongPasswordOrEmail); });
 };
