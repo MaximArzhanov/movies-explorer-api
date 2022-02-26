@@ -37,7 +37,7 @@ app.use(cors({
   optionsSuccessStatus: 204,
   allowedHeaders: ['Content-type', 'origin', 'Authorization', 'Cookie'],
   exposedHeaders: ['Set-Cookie'],
-  credentials: false,
+  credentials: true,
 }));
 
 /** Роут регистрации пользователя */
