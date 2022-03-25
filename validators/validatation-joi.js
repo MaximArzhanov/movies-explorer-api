@@ -17,7 +17,7 @@ const validateSignupRoute = celebrate({
     email: Joi
       .string()
       .required()
-      .email()
+      .pattern(/^(([^<>()[\]\\.,;:\s@\\"]+(\.[^<>()[\]\\.,;:\s@\\"]+)*)|(\\".+\\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/)
       .messages({
         'string.empty': 'Поле email не должно быть пустым',
         'any.required': 'Поле email является обязательным',
@@ -39,7 +39,7 @@ const validateSigninRoute = celebrate({
     email: Joi
       .string()
       .required()
-      .email()
+      .pattern(/^(([^<>()[\]\\.,;:\s@\\"]+(\.[^<>()[\]\\.,;:\s@\\"]+)*)|(\\".+\\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/)
       .messages({
         'string.empty': 'Поле email не должно быть пустым',
         'any.required': 'Поле email является обязательным',
@@ -72,7 +72,7 @@ const validateUpdateUserInfoRoute = celebrate({
     email: Joi
       .string()
       .required()
-      .email()
+      .pattern(/^(([^<>()[\]\\.,;:\s@\\"]+(\.[^<>()[\]\\.,;:\s@\\"]+)*)|(\\".+\\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/)
       .messages({
         'string.empty': 'Поле email не должно быть пустым',
         'any.required': 'Поле email является обязательным',
